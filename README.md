@@ -14,3 +14,5 @@ Github organization stats
 4. Open `reader.py` and add your access token where it says "ENTER YOUR ACCESS TOKEN HERE"
 
 5. Run `reader.py` to drop the bass. It may take many hours to finish, depending on how many repos/users your orgs have
+
+6. Run the queries in `fun.sql` to have fun
