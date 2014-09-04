@@ -5,6 +5,8 @@ Python+MySQL scripts to collect and analyze information about your Github organi
 
 #### Setup
 
+1. Create a Github access token in the [Github settings](https://github.com/settings/applications). Make sure you grant it the `repo` and `user` scopes.
+
 1. Install [PyGithub](http://jacquev6.github.io/PyGithub/v1/introduction.html) using `sudo easy_install PyGithub`
 
 2. Install PyMySQL using `sudo pip install PyMySQL`
