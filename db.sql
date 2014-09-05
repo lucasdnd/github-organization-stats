@@ -65,14 +65,14 @@ closed_at timestamp,
 created timestamp not null default current_timestamp
 ) engine=innodb;
 
+CREATE TABLE languages (
+id int primary key not null auto_increment,
+repo_id int not null,
+language varchar(255) not null,
+bytes int,
+created timestamp not null default current_timestamp
+) engine=innodb;
+
 CREATE USER 'gh'@'localhost' IDENTIFIED BY 'gh';
 GRANT ALL ON github.* to 'gh'@'localhost';
 FLUSH PRIVILEGES;
-
-truncate table issues;
-truncate table contribs;
-truncate table repos;
-truncate table users;
-truncate table punchcard;
-truncate table commits;
-truncate table words;

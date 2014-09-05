@@ -43,3 +43,6 @@ select
   group by gh_repo_name
   order by avg(datediff(closed_at, created_at))
   limit 100;
+
+-- Most popular languages
+select language, sum(bytes) from languages where language <> 'Assembly' group by language order by sum(bytes) desc limit 10;

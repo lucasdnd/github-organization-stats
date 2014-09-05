@@ -207,6 +207,40 @@ def addIssue(gh_repo_id, num, title, body, state, created_at, closed_at, conn, c
 
 #-------------------------------------------------------------------
 
+def addLanguage(gh_repo_id, language, bytes, conn, cur):
+
+  # Get the local repo id
+  repoId = getLocalRepoId(gh_repo_id, cur)
+  if repoId == 0:
+    print "Cannot add language. repoId " + str(repoId) + " not in local db"
+    return
+
+  # Check if this language already exists
+  if languageExists(repoId, language, cur):
+    print "Language " + language + " in repo " + str(repoId) + " already exists"
+    return
+
+  try:
+    cur.execute("""INSERT INTO languages (repo_id, language, bytes) VALUES (%s, %s, %s)""", (repoId, language, bytes))
+    conn.commit()
+  except Exception as e:
+    print "Error adding language " + language + " in repo " + str(repoId)
+    print e
+
+#-------------------------------------------------------------------
+
+def languageExists(repo_id, language, cur):
+  try:
+    cur.execute("""SELECT repo_id, language FROM languages WHERE repo_id = %s and language = %s""", (repo_id, language))
+    if len(cur.fetchall()) >= 1:
+      return True
+    return False
+  except Exception as e:
+    print "Error checking if language " + language + " in repo " + str(repo_id) + " exists"
+    print e
+
+#-------------------------------------------------------------------
+
 def truncateDatabase(conn, cur):
   try:
     cur.execute("TRUNCATE TABLE users")
@@ -216,6 +250,7 @@ def truncateDatabase(conn, cur):
     cur.execute("TRUNCATE TABLE commits")
     cur.execute("TRUNCATE TABLE words")
     cur.execute("TRUNCATE TABLE issues")
+    cur.execute("TRUNCATE TABLE languages")
     conn.commit()
     print "Database clean"
   except Exception as e:
@@ -311,6 +346,24 @@ for repo in repos:
         commits = punchCard.get(day, hour)
         addPunchCard(repo.id, day, hour, commits, conn, cur)
     print "Punch card done for " + repo.name
+
+  # Read language data
+  print "Reading language data"
+  try:
+    languages = repo.get_languages()
+  except:
+    print "Something wrong getting languages for " + repo.name
+    continue;
+
+  # Add the languages
+  if not languages is None:
+    for key, value in languages.items():
+      try:
+        print "Adding " + key
+        addLanguage(repo.id, key, value, conn, cur)
+      except Exception as e:
+        print "Something wrong reading language!"
+        print e
 
   # Get all the commits
   print "Reading commits data for " + repo.name
