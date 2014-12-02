@@ -9,10 +9,10 @@ select users.name, sum(c) commits from contribs inner join users on contribs.use
 -- Repositories most worked on
 select repos.gh_repo_name, sum(c) commits, sum(a) additions, sum(d) deletions from contribs inner join repos on contribs.repo_id = repos.id where a > 0 or d > 0 or c > 0 group by repos.gh_repo_name order by sum(c) desc, sum(a) desc, sum(d) desc;
 
--- Most common words in commit messages
+-- Top 10 most common words in commit messages
 select lower(word), count(lower(word)) from words
 where word not in('merge', 'of', 'branch', 'to', 'on', '\'master\'', 'and', 'in', 'for', '-', 'de')
-group by lower(word) order by count(lower(word));
+group by lower(word) order by count(lower(word)) desc limit 10;
 
 -- Commits on weekends
 select sum(commits) commits_on_weekends from punchcard where day = 0 or day = 6;
